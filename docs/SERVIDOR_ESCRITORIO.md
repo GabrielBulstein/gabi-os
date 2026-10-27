@@ -67,6 +67,8 @@ Las pruebas del servidor usan respuestas controladas; la comprobación manual co
 
 ## Pendiente
 
+Antes de trasladar la operación anterior, conservar recuerdos e historial de Gabito mediante el [inventario y plan de migración](MIGRACION_GABITO.md). El perfil nuevo no los importa automáticamente.
+
 1. Verificar una primera respuesta de Gabito en una conversación controlada; el acceso OAuth y la prueba del proveedor ya pasaron.
 2. Implementar conversación con Gabito, almacenamiento de tareas y permisos del lado del servidor, con evidencia de resultados.
 3. Conectar los demás especialistas gradualmente, con límites de concurrencia y consumo; los ocho personajes actuales siguen siendo ambientación.

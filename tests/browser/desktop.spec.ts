@@ -21,5 +21,5 @@ test('desktop diagnostics stay separate from fiction and unavailable in the stat
     await expect(page.locator('#desktop-status')).toContainText('Servidor no disponible');
     await expect(page.locator('#desktop-facts')).toBeEmpty();
   }
-  await expect(page.locator('.ambient-label')).toContainText('Sin IA conectada');
+  await expect(page.locator('.ambient-label')).toContainText(baseURL?.includes(':4173/')?'Sin IA conectada':'Chat local de Gabito');
 });

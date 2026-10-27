@@ -110,4 +110,8 @@ Ver [estado de la versión completa](docs/ESTADO_VERSION_1.0.md) y [motor de esc
 
 La ubicación principal es **D:\GABI-OS\project\gabi-os**. Perfil, respaldos, restauración de ensayo, herramientas de OpenClaw y cachés propios están bajo D:\GABI-OS; ver [rutas e inicio desde D:](docs/SERVIDOR_ESCRITORIO.md).
 
-El ensayo de restauración conservó 129 archivos del workspace, 38 archivos de memoria y cinco documentos de identidad, con las bases SQLite verificadas. Ese perfil sigue sin activar; no se migró todavía WhatsApp ni se habilitaron tareas reales.
+El ensayo de restauración conservó 129 archivos del workspace, 38 archivos de memoria y cinco documentos de identidad, con las bases SQLite verificadas. La conversación local utiliza una copia del workspace con la autenticación de esta PC; la restauración original se conserva. No se migró WhatsApp ni se habilitaron acciones externas.
+
+## Chat real de Gabito
+
+Desde su ficha, Conversar con Gabito abre el chat local con Sol y razonamiento bajo. Recuerdos e historial quedan en D:, con herramientas y automatizaciones deshabilitadas. Ver [inicio, pruebas y límites](docs/CHAT_GABITO.md). El chat privado aún no está disponible desde GitHub Pages o el iPhone.

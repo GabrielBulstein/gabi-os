@@ -63,3 +63,27 @@ systemctl --user is-active openclaw-gateway.service
 ```
 
 Comprobar además que Gabito responde por el canal habitual antes de dar por recuperada toda la operación. No se envían mensajes automáticamente desde estos scripts.
+
+## Transferencia privada y cifrada a Windows
+
+El informe del respaldo en origen confirmó `verified: true`, `success: true`, el servicio de Gabito activo y SSH activo. Se generó un archivo de unos 74 MiB. Esto confirma el respaldo en la Philco; aún no su restauración ni el funcionamiento de Gabito en la PC.
+
+```powershell
+.\scripts\fetch-philco-backup.ps1
+```
+
+El comando toma el último informe de respaldo verificado, valida la ruta de origen y descarga por SCP en una carpeta nueva fuera del repositorio y de OneDrive, con acceso restringido al usuario de Windows y SYSTEM. No detiene ni cambia el gateway de origen.
+
+Después comprueba tamaño y SHA-256 contra el informe. Cifra con Windows DPAPI para el usuario actual y comprueba que puede descifrar la copia y obtener la misma huella. Solo después elimina la copia temporal descargada sin cifrar, conservando intacto el archivo remoto. Los errores no se anuncian como éxito; una descarga incompleta puede quedar en la carpeta privada para revisar.
+
+La copia queda en `%LOCALAPPDATA%\GabiOS\migration\backups\<identificador>\gabito-full.tar.gz.dpapi`. El recibo `philco-transfer-*.json` se guarda en la carpeta de migración y no contiene recuerdos ni claves. Esta modalidad tiene un límite de 512 MiB por archivo para acotar la memoria usada durante el cifrado.
+
+**DPAPI depende de la cuenta/perfil de Windows que cifró el archivo.** Esta copia no es todavía un respaldo portátil para reinstalar Windows o recuperar con otro usuario; conservar el respaldo original de la Philco y preparar después una copia de recuperación independiente. Nunca subir el archivo a GitHub/Pages ni adjuntarlo al chat.
+
+Prueba de Windows con datos ficticios, sin SSH ni datos de Gabito:
+
+```powershell
+powershell.exe -NoProfile -File tests/migration/test_transfer.ps1
+```
+
+La siguiente fase requiere una versión de OpenClaw compatible con la fuente y una carpeta de ensayo privada. No reemplazar el perfil nuevo autenticado ni activar WhatsApp o automatizaciones durante la inspección de lo restaurado.

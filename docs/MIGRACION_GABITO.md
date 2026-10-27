@@ -38,3 +38,28 @@ El informe muestra versiones, estado del servicio, rutas candidatas, cantidades/
 Fuentes: [migración oficial](https://docs.openclaw.ai/install/migrating), [espacio de trabajo](https://docs.openclaw.ai/concepts/agent-workspace), [respaldo y restauración](https://docs.openclaw.ai/cli/backup).
 
 Estado al preparar esta fase: el intento de SSH automático a la dirección local anterior fue rechazado por autenticación. Aún no se ha inventariado ni respaldado la Philco desde esta etapa. La autenticación interactiva local es necesaria para continuar; no hace falta enviar contraseñas ni instalar claves a ciegas.
+
+## Inventario completado y respaldo autorizado
+
+El usuario completó el inventario mediante SSH. El informe privado del 27/10/2026 indica OpenClaw 2026.10.1 en la Philco, servicio activo, workspace de 129 archivos y 38 archivos de memoria diaria. El recorrido del estado general se truncó a 20.000 archivos: no es un conteo completo ni un respaldo. La PC tenía instalada la versión 2026.9.8; no restaurar bases de la fuente sobre esa versión sin revisar compatibilidad.
+
+El usuario autorizó proceder con el respaldo. Desde el repositorio:
+
+```powershell
+.\scripts\backup-philco.ps1
+```
+
+El procedimiento vuelve a comprobar el servicio y las rutas de su proceso, revisa los comandos de respaldo instalados y exige al menos 5 GiB libres en origen. Rechaza perfiles/rutas distintos de los inventariados para revisarlos primero. Crea una carpeta privada en `~/Backups/GabiOS/<identificador>` y un servicio de usuario temporal, sin habilitar arranque permanente ni cambiar la instalación global.
+
+El trabajo comprueba el plan de captura antes de detener el gateway. Lo pausa durante `backup create`, intenta reiniciarlo enseguida y después ejecuta `backup verify`, calcula SHA-256 y registra el estado del servicio. Un bloqueo evita dos trabajos simultáneos. El reinicio de recuperación de systemd solo se arma para el trabajo que llegó a intentar la pausa. Si SSH se desconecta, el trabajo remoto sigue; no relanzarlo a ciegas. Una caída del equipo o un fallo del propio servicio aún requieren recuperación manual.
+
+El archivo es una copia **local, privada y sin cifrar** en la Philco, con permisos restringidos; incluye credenciales sensibles. No compartirlo por chat ni subirlo a GitHub/Pages. La transferencia protegida, una segunda copia cifrada y el ensayo de restauración son fases posteriores. El informe resumido se guarda en `%LOCALAPPDATA%\GabiOS\migration`. Solo `success: true`, `verified: true` y `service_after: active` confirman la finalización prevista; iniciar el script no demuestra que el respaldo exista.
+
+Si el servicio no queda activo, recuperar desde una sesión SSH autenticada con:
+
+```bash
+systemctl --user start openclaw-gateway.service
+systemctl --user is-active openclaw-gateway.service
+```
+
+Comprobar además que Gabito responde por el canal habitual antes de dar por recuperada toda la operación. No se envían mensajes automáticamente desde estos scripts.

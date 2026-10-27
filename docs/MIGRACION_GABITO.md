@@ -100,6 +100,8 @@ La descarga SCP real se interrumpió por `Connection reset` al 41 %, dejando uno
 
 La carpeta debe estar directamente bajo el directorio privado de respaldos y conservar su ACL restringida. Un bloqueo impide dos transferencias sobre la misma copia y `transfer-source.json` asocia los siguientes intentos con la ruta, tamaño y SHA-256 esperados. El parcial del primer intento, anterior a ese registro, se adopta explícitamente usando la carpeta conocida; nunca se acepta sin la comparación final del SHA-256 completo. No se trunca una copia demasiado grande ni se reemplaza una copia cifrada existente.
 
+Cada ejecución permite hasta tres intentos en la misma ventana, conservando el avance entre conexiones. SSH puede solicitar la contraseña otra vez en cada reconexión; no se almacena ni reutiliza la contraseña. Tras agotar los intentos se conserva el parcial para una reanudación posterior, sin bucles indefinidos ni cambios al servidor SSH. La causa de los reinicios de conexión aún no está diagnosticada.
+
 El modo de comandos SFTP ejecuta únicamente `reget` y `bye`. `BatchMode=no` precede a `-b -` para permitir el ingreso local de contraseña. Las pruebas locales simulan un corte, verifican que se conserve el avance y completan la descarga ficticia comprobando su huella. La transferencia real sigue requiriendo el recibo final; una simulación aprobada no equivale a una copia terminada.
 
 Referencia: [OpenSSH SFTP: reget y reanudación](https://man.openbsd.org/sftp).

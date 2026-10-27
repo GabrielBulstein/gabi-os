@@ -93,7 +93,7 @@ function Set-TransferIdentity([string]$Directory, $Report) {
     }
 }
 
-function Invoke-SftpResume([string]$Directory, [string]$Archive, [string]$Target) {
+function Invoke-SftpResumeAttempt([string]$Directory, [string]$Archive, [string]$Target) {
     Push-Location -LiteralPath $Directory
     try {
         # BatchMode=no MUST precede -b so SSH can prompt on the local console.
@@ -102,6 +102,16 @@ function Invoke-SftpResume([string]$Directory, [string]$Archive, [string]$Target
         $code = $LASTEXITCODE
     } finally { Pop-Location }
     if ($code -ne 0) { throw "Conexion interrumpida. Se conserva lo descargado; reanudar con -ResumeDirectory `"$Directory`"." }
+}
+
+function Invoke-SftpResume([string]$Directory, [string]$Archive, [string]$Target, [ValidateRange(1,3)][int]$MaxAttempts=3) {
+    for ($attempt = 1; $attempt -le $MaxAttempts; $attempt++) {
+        try { Invoke-SftpResumeAttempt $Directory $Archive $Target; return }
+        catch {
+            if ($attempt -eq $MaxAttempts) { throw }
+            Write-Host "La conexion se interrumpio. Se conserva el avance. Intento $($attempt+1) de $MaxAttempts; puede pedir la contrasena otra vez."
+        }
+    }
 }
 
 function Invoke-BackupTransfer {

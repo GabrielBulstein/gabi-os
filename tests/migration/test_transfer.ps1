@@ -55,17 +55,21 @@ try {
             if ($script:SimulateCut) { $count = [Math]::Min(8192, $count) }
             $stream = [IO.File]::Open($destination, [IO.FileMode]::Append)
             try { $stream.Write($script:RemoteBytes, $offset, $count) } finally { $stream.Dispose() }
-            if ($script:SimulateCut) { $global:LASTEXITCODE = 1 } else { $global:LASTEXITCODE = 0 }
+            if ($script:SimulateCut) { $script:SimulateCut = $false; $global:LASTEXITCODE = 1 } else { $global:LASTEXITCODE = 0 }
         }
     }
     $caught = $false
-    try { Invoke-SftpResume $root $report.archive 'test@127.0.0.1' } catch { $caught = $true }
+    try { Invoke-SftpResume $root $report.archive 'test@127.0.0.1' -MaxAttempts 1 } catch { $caught = $true }
     if (!$caught -or (Get-Item -LiteralPath $resumePath).Length -ne 24576) { throw 'No se conservo el avance tras un corte simulado.' }
     $script:SimulateCut = $false
     Invoke-SftpResume $root $report.archive 'test@127.0.0.1'
     if ((Get-FileHash -LiteralPath $resumePath -Algorithm SHA256).Hash.ToLowerInvariant() -ne $resumeHash) { throw 'La copia reanudada no coincide con el original ficticio.' }
     if ($script:SftpLines.Count -ne 2 -or $script:SftpLines[0] -ne "reget $($report.archive) gabito-full.tar.gz.partial" -or $script:SftpLines[1] -ne 'bye') { throw 'Comandos de descarga inesperados.' }
     if ([array]::IndexOf($script:SftpArgs,'BatchMode=no') -gt [array]::IndexOf($script:SftpArgs,'-b')) { throw 'El orden de opciones impide la autenticacion interactiva.' }
+    [IO.File]::WriteAllBytes($resumePath, [byte[]]$script:RemoteBytes[0..16383])
+    $script:SimulateCut = $true
+    Invoke-SftpResume $root $report.archive 'test@127.0.0.1'
+    if ((Get-FileHash -LiteralPath $resumePath -Algorithm SHA256).Hash.ToLowerInvariant() -ne $resumeHash) { throw 'El reintento automatico no completo la copia ficticia.' }
     Write-Output 'OK: ACL privada, cifrado, validacion de origen, rechazo de inyeccion, corte simulado y reanudacion sin perder bytes.'
 } finally {
     foreach ($file in @($plain, $cipher, (Join-Path $root 'must-not-exist.dpapi'), (Join-Path $root 'gabito-full.tar.gz.partial'), (Join-Path $root 'transfer-source.json'))) { if (Test-Path -LiteralPath $file) { Remove-Item -LiteralPath $file } }

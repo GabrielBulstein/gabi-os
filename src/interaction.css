@@ -1,3 +1,7 @@
 /* Transparent space around floating controls must not swallow taps on the office. */
 .cast,.explore-tools{pointer-events:none}
 .cast button,.explore-tools button{pointer-events:auto}
+.camera-tools .square{width:44px;height:44px}
+.scene-actions button{min-height:44px}
+@media(max-width:600px){.header-right>.square{width:44px;height:44px}}
+@media(max-width:380px){.header-right .local-time{display:none}}

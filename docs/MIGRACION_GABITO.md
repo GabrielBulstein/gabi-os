@@ -89,3 +89,17 @@ powershell.exe -NoProfile -File tests/migration/test_transfer.ps1
 La siguiente fase requiere una versión de OpenClaw compatible con la fuente y una carpeta de ensayo privada. No reemplazar el perfil nuevo autenticado ni activar WhatsApp o automatizaciones durante la inspección de lo restaurado.
 
 Corrección de compatibilidad: en una terminal Windows PowerShell, el módulo que provee `Set-Acl` no pudo cargarse y la primera transferencia se detuvo antes de ejecutar SCP. La carpeta privada se crea ahora directamente mediante las API de .NET, con la ACL aplicada desde su creación y verificada antes de descargar. Las pruebas incluyen tanto Windows PowerShell como PowerShell 7, simulan `Set-Acl` no disponible y verifican los permisos heredados del archivo. Iniciar la terminal con `-NoProfile` evita interferencias del perfil del shell. Una sesión SSH abierta en otra ventana no ejecuta ni autentica automáticamente este comando SCP.
+
+### Reanudar después de una desconexión
+
+La descarga SCP real se interrumpió por `Connection reset` al 41 %, dejando unos 31 MiB en la carpeta privada. No se modificó el archivo de origen. El procedimiento usa ahora SFTP `reget`, con keepalives, una solicitud a la vez y límite de 4096 Kbit/s; esos ajustes no prueban cuál fue la causa del corte.
+
+```powershell
+.\scripts\fetch-philco-backup.ps1 -ResumeDirectory "RUTA_DE_LA_CARPETA_PRIVADA_DEL_INTENTO"
+```
+
+La carpeta debe estar directamente bajo el directorio privado de respaldos y conservar su ACL restringida. Un bloqueo impide dos transferencias sobre la misma copia y `transfer-source.json` asocia los siguientes intentos con la ruta, tamaño y SHA-256 esperados. El parcial del primer intento, anterior a ese registro, se adopta explícitamente usando la carpeta conocida; nunca se acepta sin la comparación final del SHA-256 completo. No se trunca una copia demasiado grande ni se reemplaza una copia cifrada existente.
+
+El modo de comandos SFTP ejecuta únicamente `reget` y `bye`. `BatchMode=no` precede a `-b -` para permitir el ingreso local de contraseña. Las pruebas locales simulan un corte, verifican que se conserve el avance y completan la descarga ficticia comprobando su huella. La transferencia real sigue requiriendo el recibo final; una simulación aprobada no equivale a una copia terminada.
+
+Referencia: [OpenSSH SFTP: reget y reanudación](https://man.openbsd.org/sftp).

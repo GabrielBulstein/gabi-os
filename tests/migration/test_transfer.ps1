@@ -28,8 +28,46 @@ try {
     $caught = $false
     try { Assert-VerifiedBackupReport ([pscustomobject]@{schema=1;kind='source-backup';success=$true;verified=$true;archive='/etc/shadow';sha256=$hash;bytes=32}) 'gabriel' } catch { $caught = $true }
     if (!$caught) { throw 'Se acepto una ruta fuera del respaldo.' }
-    Write-Output 'OK: carpeta privada sin Set-Acl, permisos heredados, cifrado/descifrado, rechazo de carpeta existente, huella incorrecta, informe no verificado y ruta ajena.'
+    $script:RemoteBytes = [byte[]]::new(65536)
+    [Random]::new(42).NextBytes($script:RemoteBytes)
+    $resumePath = Join-Path $root 'gabito-full.tar.gz.partial'
+    [IO.File]::WriteAllBytes($resumePath, [byte[]]$script:RemoteBytes[0..16383])
+    $sha = [Security.Cryptography.SHA256]::Create()
+    try { $resumeHash = ([BitConverter]::ToString($sha.ComputeHash($script:RemoteBytes))).Replace('-','').ToLowerInvariant() } finally { $sha.Dispose() }
+    $report = [pscustomobject]@{schema=1;kind='source-backup';success=$true;verified=$true;archive='/home/gabriel/Backups/GabiOS/20261027T181012Z-b3454e13/gabito-full.tar.gz';sha256=$resumeHash;bytes=$script:RemoteBytes.Length}
+    Set-TransferIdentity $root $report
+    $wrong = [pscustomobject]@{archive=$report.archive;sha256=('0'*64);bytes=$report.bytes}
+    $caught = $false
+    try { Set-TransferIdentity $root $wrong } catch { $caught = $true }
+    if (!$caught) { throw 'Se acepto reanudar un respaldo distinto.' }
+    $injected = [pscustomobject]@{schema=1;kind='source-backup';success=$true;verified=$true;archive=($report.archive+"`nbye");sha256=$resumeHash;bytes=$report.bytes}
+    $caught = $false
+    try { Assert-VerifiedBackupReport $injected 'gabriel' } catch { $caught = $true }
+    if (!$caught) { throw 'Se acepto una ruta con salto de linea.' }
+    $script:SimulateCut = $true
+    function sftp.exe {
+        begin { $script:SftpArgs = @($args); $script:SftpLines = @() }
+        process { $script:SftpLines += $_ }
+        end {
+            $destination = Join-Path $PWD 'gabito-full.tar.gz.partial'
+            $offset = [int](Get-Item -LiteralPath $destination).Length
+            $count = $script:RemoteBytes.Length - $offset
+            if ($script:SimulateCut) { $count = [Math]::Min(8192, $count) }
+            $stream = [IO.File]::Open($destination, [IO.FileMode]::Append)
+            try { $stream.Write($script:RemoteBytes, $offset, $count) } finally { $stream.Dispose() }
+            if ($script:SimulateCut) { $global:LASTEXITCODE = 1 } else { $global:LASTEXITCODE = 0 }
+        }
+    }
+    $caught = $false
+    try { Invoke-SftpResume $root $report.archive 'test@127.0.0.1' } catch { $caught = $true }
+    if (!$caught -or (Get-Item -LiteralPath $resumePath).Length -ne 24576) { throw 'No se conservo el avance tras un corte simulado.' }
+    $script:SimulateCut = $false
+    Invoke-SftpResume $root $report.archive 'test@127.0.0.1'
+    if ((Get-FileHash -LiteralPath $resumePath -Algorithm SHA256).Hash.ToLowerInvariant() -ne $resumeHash) { throw 'La copia reanudada no coincide con el original ficticio.' }
+    if ($script:SftpLines.Count -ne 2 -or $script:SftpLines[0] -ne "reget $($report.archive) gabito-full.tar.gz.partial" -or $script:SftpLines[1] -ne 'bye') { throw 'Comandos de descarga inesperados.' }
+    if ([array]::IndexOf($script:SftpArgs,'BatchMode=no') -gt [array]::IndexOf($script:SftpArgs,'-b')) { throw 'El orden de opciones impide la autenticacion interactiva.' }
+    Write-Output 'OK: ACL privada, cifrado, validacion de origen, rechazo de inyeccion, corte simulado y reanudacion sin perder bytes.'
 } finally {
-    foreach ($file in @($plain, $cipher, (Join-Path $root 'must-not-exist.dpapi'))) { if (Test-Path -LiteralPath $file) { Remove-Item -LiteralPath $file } }
+    foreach ($file in @($plain, $cipher, (Join-Path $root 'must-not-exist.dpapi'), (Join-Path $root 'gabito-full.tar.gz.partial'), (Join-Path $root 'transfer-source.json'))) { if (Test-Path -LiteralPath $file) { Remove-Item -LiteralPath $file } }
     Remove-Item -LiteralPath $root
 }

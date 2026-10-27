@@ -92,6 +92,13 @@ export function floorArt(): PixelPainter {
   p.ctx.globalAlpha=.10;
   for(const x of [2,7]) p.tile(x,.25,2.7,3.8,4,'#fff0b0');
   p.ctx.globalAlpha=1;
+  // Small signs, hallway arrows, worn floor details and a warm entry threshold.
+  for(const [x,y,label]of [[1.5,8.4,'ESTUDIO'],[4.5,9.3,'CÓDIGO'],[10.5,8.7,'PROCESOS'],[11.1,12.3,'CUENTAS']] as [number,number,string][]){
+    const q=iso(x,y);p.ctx.globalAlpha=.65;p.text(label,q.x,q.y,6,'#65705e');p.ctx.globalAlpha=1;
+  }
+  p.tile(7.3,12.8,2.1,.2,2,'#c4a16c');
+  const door=iso(8.4,13);p.text('ENTRADA',door.x,door.y+19,8,'#af9c74');
+  const clock=iso(10.8,0);p.rect(clock.x-12,clock.y-92,24,24,'#9a8f72');p.rect(clock.x-9,clock.y-89,18,18,'#e7dbbb');p.line(clock.x,clock.y-87,clock.x,clock.y-79,'#626b59');p.line(clock.x,clock.y-79,clock.x+6,clock.y-76,'#626b59');
   // Pinboard on the west wall, clock and a studio nameplate.
   const board=iso(0,4.5);
   p.poly([[board.x,board.y-88],[board.x-68,board.y-54],[board.x-68,board.y-12],[board.x,board.y-46]],'#74644f');
@@ -104,7 +111,7 @@ export function floorArt(): PixelPainter {
   return p;
 }
 
-export type FurnitureKind = 'desk'|'gabitoDesk'|'emptyDesk'|'meeting'|'plant'|'books'|'coffee'|'reception'|'frame';
+export type FurnitureKind = 'desk'|'gabitoDesk'|'emptyDesk'|'profeDesk'|'migueDesk'|'dexterDesk'|'nachoDesk'|'kevinDesk'|'meeting'|'plant'|'books'|'coffee'|'reception'|'frame'|'board'|'copier'|'fridge'|'diagram';
 export function furnitureArt(kind: FurnitureKind): PixelPainter {
   const p=new PixelPainter(320,280,160,160);
   const point=(x:number,y:number,z=0)=>{const q=iso(x,y);return {x:q.x,y:q.y-z};};
@@ -125,13 +132,32 @@ export function furnitureArt(kind: FurnitureKind): PixelPainter {
     p.box(0,0,w,h,33,top,'#a57e58','#8e6d4f',27);
     p.tile(.08,.1,w-.16,.08,34,'#dfbc88');
   }
-  if(['desk','gabitoDesk','emptyDesk'].includes(kind)) {
-    const w=kind==='gabitoDesk'?2:3;table(w,1.65);
+  if(['desk','gabitoDesk','emptyDesk','profeDesk','migueDesk','dexterDesk','nachoDesk','kevinDesk'].includes(kind)) {
+    const w=['gabitoDesk','profeDesk','nachoDesk','kevinDesk'].includes(kind)?2:3;table(w,1.65,kind==='profeDesk'?'#aa9270':kind==='dexterDesk'?'#b7a582':'#c39b6e');
     monitor(.35,.35);
     p.box(.7,.82,.8,.3,35,'#70776b','#555f55','#4e574e',33);
     for(let i=0;i<5;i++) {const a=point(.76+i*.12,.88,36);p.rect(a.x,a.y,2,2,'#acaf99');}
     p.tile(w-.85,.65,.52,.6,34,'#e4dac0');p.tile(w-.77,.72,.35,.05,35,'#9ba18b');
     mug(w-.35,.3);
+    if(kind==='migueDesk'){
+      monitor(1.4,.35);p.box(2.35,1.1,.5,.45,48,'#67796a','#354c45','#455a4e',33);
+      const a=point(2.6,1.3,49);p.rect(a.x-2,a.y-5,5,5,'#d3b069');p.rect(a.x-1,a.y-8,3,3,'#bbcbb1');
+      const cable=point(1.5,1.65,0);p.line(cable.x,cable.y-27,cable.x+8,cable.y+4,'#5a6656');p.line(cable.x+8,cable.y+4,cable.x+22,cable.y+10,'#5a6656');
+    }
+    if(kind==='profeDesk'){
+      for(let i=0;i<3;i++){p.box(1.1,.6,.6,.5,36+i*3,['#7c8d6f','#ba9b67','#a16f56'][i],'#857b5c','#6e7557',33+i*3);}
+      const a=point(1.4,.9,46);p.text('ABC',a.x,a.y,5,'#efe0b7');
+    }
+    if(kind==='nachoDesk'){
+      for(let i=0;i<3;i++)p.tile(1.05+i*.09,.7+i*.08,.5,.5,35+i,'#e5ddc2');
+      const q=point(1.4,1,40);p.text('CV',q.x,q.y,5,'#7b8870');
+    }
+    if(kind==='kevinDesk'){
+      p.box(.9,.7,.4,.6,37,'#546860','#3f514a','#4b5c4e',33);
+      const a=point(1.05,.85,38);p.rect(a.x-3,a.y,6,3,'#c0cba8');
+      for(let i=0;i<4;i++)p.tile(1.4+i*.08,.7+i*.1,.25,.18,35+i%2,['#b88d53','#ccac69'][i%2]);
+      p.tile(1.25,.15,.55,.4,34,'#e9ddbd');
+    }
     if(kind==='gabitoDesk') {
       const t=point(1.65,1.15,34);p.rect(t.x-3,t.y-22,8,22,'#777957');p.rect(t.x-2,t.y-23,6,4,'#d9cda3');p.rect(t.x-2,t.y-13,6,7,'#d4c18b');
     } else if(kind==='desk') {
@@ -169,12 +195,48 @@ export function furnitureArt(kind: FurnitureKind): PixelPainter {
     p.box(.2,.2,.65,.65,60,'#69756a','#4d5c52','#3c4e44',33);
     const a=point(.6,.8,55);p.rect(a.x-7,a.y,10,15,'#253e35');p.rect(a.x-4,a.y+6,5,6,'#d5cbae');p.rect(a.x+5,a.y+2,2,2,'#e7b36d');
     mug(1.6,.9);p.tile(1.2,.2,.5,.4,34,'#e3dac0');
+    const q=point(1.15,.25,57);p.rect(q.x-6,q.y-7,15,11,'#7c8875');p.rect(q.x-4,q.y-5,10,6,'#a8b49a');p.rect(q.x+7,q.y-4,1,4,'#e0d0a9');
   }
-  if(kind==='reception') {table(3,.9);p.box(0,.65,3,.25,45,'#d3b388','#9c7d59','#8f7254',5);monitor(.4,.2);}
+  if(kind==='reception') {table(3,.9);p.box(0,.65,3,.25,45,'#d3b388','#9c7d59','#8f7254',5);monitor(.4,.2);const q=point(2,.4,35);p.rect(q.x-5,q.y-5,12,7,'#465c50');p.rect(q.x-6,q.y-7,14,3,'#35483e');p.text('RECEPCIÓN',q.x-20,q.y+22,7,'#ead5ac');}
+  if(kind==='board'||kind==='diagram'){
+    p.box(0,0,.15,2.4,78,'#b2a17d','#8f8164','#9e8c69',28);
+    const a=point(.19,0,72),b=point(.19,2.3,72);
+    p.poly([[a.x,a.y],[b.x,b.y],[b.x,b.y+40],[a.x,a.y+40]],kind==='board'?'#506f5a':'#dedac3');
+    if(kind==='board'){
+      for(let i=0;i<5;i++){const s=point(.22,.2+i*.35,64-i%2*3),e=point(.22,.9+i*.2,64-i%2*3);p.line(s.x,s.y,e.x,e.y,'#c5d5ad');}
+      const q=point(.22,1,40);p.text('A → B',q.x,q.y,8,'#d3dfb6');
+    }else{
+      for(let i=0;i<4;i++){const q=point(.22,.3+i*.45,61-i%2*10);p.rect(q.x-6,q.y-3,12,8,['#b5c3a3','#cfb884','#b9c9be','#c9a091'][i]);if(i<3)p.line(q.x-4,q.y+7,q.x-15,q.y+14,'#87967c');}
+    }
+    for(const y of [0,2.1])p.box(0,y,.3,.25,29,'#a49877','#827b62','#8e8368');
+  }
+  if(kind==='copier'){
+    p.box(0,0,.95,.95,42,'#d0d1b8','#a0ae99','#859785');p.box(.08,.08,.75,.7,49,'#687b6c','#4d6659','#56705f',42);
+    p.tile(.16,.19,.55,.4,50,'#c5d3b9');const a=point(.65,.95,38);p.rect(a.x-8,a.y,14,5,'#40574b');p.rect(a.x-6,a.y+3,12,5,'#e4ddc4');p.rect(a.x+10,a.y-3,3,3,'#a9c783');
+    const b=point(.7,.65,50);p.rect(b.x,b.y-1,5,3,'#d8b978');
+  }
+  if(kind==='fridge'){
+    p.box(0,0,.85,1.7,84,'#d0cfb5','#b6bca5','#9aa995');const a=point(.85,1.1,65);p.rect(a.x-2,a.y,3,16,'#647b69');
+    const b=point(.4,1.7,58);p.rect(b.x-4,b.y-3,7,9,'#dfbd78');p.rect(b.x-1,b.y,2,3,'#bd8059');
+  }
   if(kind==='frame') {
     p.rect(-13,-61,26,33,'#786a4f');p.rect(-10,-58,20,27,'#d8cbab');p.rect(-7,-55,14,19,'#344c6b');p.rect(-7,-47,14,4,'#d2b661');
     p.text('BOCA',0,-24,7,'#756c55');
     // Original placeholder colors only; no official crest is reproduced.
   }
+  return p;
+}
+
+/** Small emissive screen pixels remain bright after the room is tinted for night. */
+export function screenLightArt(kind:FurnitureKind):PixelPainter{
+  const p=new PixelPainter(320,280,160,160);
+  const screen=(x:number,y:number)=>{
+    const a=iso(x,y),b=iso(x+.95,y);
+    p.poly([[a.x+3,a.y-58],[b.x-3,b.y-61],[b.x-3,b.y-42],[a.x+3,a.y-39]],'#b9d1b1');
+    for(let i=0;i<3;i++)p.line(a.x+7,a.y-54+i*4,b.x-7,b.y-57+i*4,'#e0ddb0');
+  };
+  screen(kind==='reception'?.4:.35,kind==='reception'?.2:.35);
+  if(kind==='migueDesk')screen(1.4,.35);
+  if(kind==='desk'){const q=iso(2.6,.1);p.rect(q.x-3,q.y-61,12,3,'#ffda8f');}
   return p;
 }

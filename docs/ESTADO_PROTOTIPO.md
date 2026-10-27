@@ -1,5 +1,7 @@
 # Estado del episodio piloto 0.1
 
+Registro histórico del piloto. Para la ampliación actual, consultar `ESTADO_VERSION_1.0.md`. El piloto fue publicado posteriormente con autorización del usuario.
+
 Referencia: `GABI_OS_Documento_Maestro_v1.0.md`. La autorización posterior del usuario permite reconstrucción completa y elimina la obligación de conservar/migrar herramientas anteriores. El resto del Documento Maestro sigue vigente.
 
 ## Implementado

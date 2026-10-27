@@ -12,16 +12,20 @@ export const footprints: Footprint[] = [
   { x: 1, y: 3, w: 2, h: 2 }, // Gabito, next to Gabi
   { x: 11, y: 1, w: 3, h: 3 }, // meetings, northeast
   { x: 0, y: 0, w: 1, h: 3 }, // library, west
+  { x: 0, y: 6, w: 2, h: 2 }, // Profe
   { x: 3, y: 7, w: 3, h: 2 }, // future Migue
   { x: 9, y: 6, w: 3, h: 2 }, // future Dexter
   { x: 13, y: 7, w: 2, h: 2 }, // future Nacho
   { x: 13, y: 10, w: 2, h: 2 }, // kitchenette
+  { x: 10, y: 10, w: 2, h: 2 }, // Kevin
+  { x: 15, y: 10, w: 1, h: 2 }, // fridge
+  { x: 1, y: 10, w: 1, h: 1 }, // copier
   { x: 3, y: 11, w: 3, h: 1 }, // reception
 ];
 export function blockedCells(): Set<string> {
   const set = new Set<string>();
   for (const f of footprints) for (let x=f.x; x<f.x+f.w; x++) for (let y=f.y; y<f.y+f.h; y++) set.add(cellKey(x,y));
-  for (const p of [{x:8,y:1},{x:0,y:6},{x:15,y:5},{x:1,y:11}]) set.add(cellKey(p.x,p.y));
+  for (const p of [{x:8,y:1},{x:0,y:9},{x:15,y:5},{x:1,y:12}]) set.add(cellKey(p.x,p.y));
   return set;
 }
 export function walkable(p: Point, blocked: Set<string>): boolean {

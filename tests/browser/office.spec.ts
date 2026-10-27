@@ -1,6 +1,9 @@
 import { test,expect } from '@playwright/test';
 
-test.beforeEach(async({page})=>{await page.goto('./');await expect(page.locator('#loading')).toHaveCount(0);});
+test.beforeEach(async({page})=>{
+  await page.addInitScript(()=>{if(!sessionStorage.getItem('office-test-initialized')){localStorage.setItem('gabi-pixel-office:preferences:v1',JSON.stringify({welcome:false,timePreview:'day'}));sessionStorage.setItem('office-test-initialized','1');}});
+  await page.goto('./');await expect(page.locator('#loading')).toHaveCount(0);
+});
 test('boots the office and exposes accessible character actions without runtime errors',async({page},info)=>{
   const errors:string[]=[];page.on('pageerror',e=>errors.push(e.message));
   await expect(page.locator('canvas')).toBeVisible();

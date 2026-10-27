@@ -1,4 +1,5 @@
 const paths:Record<string,string>={
+  volume:'M11 5 6 9H3v6h3l5 4V5ZM15 8a6 6 0 0 1 0 8M18 5a10 10 0 0 1 0 14',
   plus:'M12 5v14M5 12h14',minus:'M5 12h14',reset:'M4 9V4m0 0h5M4 4l4 4a8 8 0 1 1-2 9',
   settings:'M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8ZM4 7l3-3 3 2h4l3-2 3 3-2 3v4l2 3-3 3-3-2h-4l-3 2-3-3 2-3v-4Z',
   close:'m6 6 12 12M6 18 18 6',follow:'M9 3H3v6m12-6h6v6M3 15v6h6m12-6v6h-6M12 8v8m-4-4h8',

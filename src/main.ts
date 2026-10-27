@@ -1,4 +1,5 @@
 import './style.css';
+import './interaction.css';
 import { readPreferences } from './core/preferences';
 import { mountInterface } from './ui/interface';
 

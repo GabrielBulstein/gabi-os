@@ -87,3 +87,5 @@ powershell.exe -NoProfile -File tests/migration/test_transfer.ps1
 ```
 
 La siguiente fase requiere una versión de OpenClaw compatible con la fuente y una carpeta de ensayo privada. No reemplazar el perfil nuevo autenticado ni activar WhatsApp o automatizaciones durante la inspección de lo restaurado.
+
+Corrección de compatibilidad: en una terminal Windows PowerShell, el módulo que provee `Set-Acl` no pudo cargarse y la primera transferencia se detuvo antes de ejecutar SCP. La carpeta privada se crea ahora directamente mediante las API de .NET, con la ACL aplicada desde su creación y verificada antes de descargar. Las pruebas incluyen tanto Windows PowerShell como PowerShell 7, simulan `Set-Acl` no disponible y verifican los permisos heredados del archivo. Iniciar la terminal con `-NoProfile` evita interferencias del perfil del shell. Una sesión SSH abierta en otra ventana no ejecuta ni autentica automáticamente este comando SCP.

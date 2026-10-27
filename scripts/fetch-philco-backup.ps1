@@ -41,6 +41,35 @@ function Protect-VerifiedArchive([string]$PlainPath, [string]$CipherPath, [strin
     }
 }
 
+function New-PrivateBackupDirectory([string]$Path) {
+    $directoryInfo = [IO.DirectoryInfo]::new($Path)
+    if ($directoryInfo.Exists) { throw 'La carpeta privada ya existe. No se modificaran sus permisos.' }
+    $acl = [Security.AccessControl.DirectorySecurity]::new()
+    $acl.SetAccessRuleProtection($true, $false)
+    $inherit = [Security.AccessControl.InheritanceFlags]'ContainerInherit,ObjectInherit'
+    $allowed = @([Security.Principal.WindowsIdentity]::GetCurrent().User, [Security.Principal.SecurityIdentifier]::new('S-1-5-18'))
+    foreach ($sid in $allowed) {
+        $rule = [Security.AccessControl.FileSystemAccessRule]::new($sid, [Security.AccessControl.FileSystemRights]::FullControl, $inherit, [Security.AccessControl.PropagationFlags]::None, [Security.AccessControl.AccessControlType]::Allow)
+        $acl.AddAccessRule($rule)
+    }
+    # Create with the private ACL already applied, without the Set-Acl module.
+    if ($PSVersionTable.PSEdition -eq 'Desktop') {
+        $directoryInfo.Create($acl)
+        $actual = $directoryInfo.GetAccessControl()
+    } else {
+        [IO.FileSystemAclExtensions]::Create($directoryInfo, $acl)
+        $actual = [IO.FileSystemAclExtensions]::GetAccessControl($directoryInfo)
+    }
+    $rules = @($actual.GetAccessRules($true, $true, [Security.Principal.SecurityIdentifier]))
+    if (!$actual.AreAccessRulesProtected -or $rules.Count -ne 2) { throw 'No se confirmaron los permisos privados. No se descargara el respaldo.' }
+    foreach ($rule in $rules) {
+        if ($rule.IdentityReference.Value -notin @($allowed.Value) -or $rule.IsInherited -or
+            $rule.AccessControlType -ne [Security.AccessControl.AccessControlType]::Allow -or
+            $rule.FileSystemRights -ne [Security.AccessControl.FileSystemRights]::FullControl -or
+            $rule.InheritanceFlags -ne $inherit) { throw 'Los permisos no coinciden con la carpeta privada esperada.' }
+    }
+}
+
 function Invoke-BackupTransfer {
     $migration = Join-Path ([Environment]::GetFolderPath('LocalApplicationData')) 'GabiOS\migration'
     if (!$ReportPath) {
@@ -54,15 +83,7 @@ function Invoke-BackupTransfer {
     New-Item -ItemType Directory -Path $backupRoot -Force | Out-Null
     if ((Get-Item -LiteralPath $backupRoot).Attributes -band [IO.FileAttributes]::ReparsePoint) { throw 'La carpeta de respaldos es un enlace. Revisar antes de descargar.' }
     $directory = Join-Path $backupRoot ((Get-Date -Format 'yyyyMMdd-HHmmss') + '-' + [guid]::NewGuid().ToString('N').Substring(0,8))
-    New-Item -ItemType Directory -Path $directory | Out-Null
-    $acl = New-Object Security.AccessControl.DirectorySecurity
-    $acl.SetAccessRuleProtection($true, $false)
-    $inherit = [Security.AccessControl.InheritanceFlags]'ContainerInherit,ObjectInherit'
-    foreach ($sid in @([Security.Principal.WindowsIdentity]::GetCurrent().User, [Security.Principal.SecurityIdentifier]::new('S-1-5-18'))) {
-        $rule = [Security.AccessControl.FileSystemAccessRule]::new($sid, [Security.AccessControl.FileSystemRights]::FullControl, $inherit, [Security.AccessControl.PropagationFlags]::None, [Security.AccessControl.AccessControlType]::Allow)
-        $acl.AddAccessRule($rule)
-    }
-    Set-Acl -LiteralPath $directory -AclObject $acl
+    New-PrivateBackupDirectory $directory
     $plainPath = Join-Path $directory 'gabito-full.tar.gz.partial'
     $cipherPath = Join-Path $directory 'gabito-full.tar.gz.dpapi'
     Write-Host 'Copia por SSH a una carpeta privada de esta PC. No detiene ni modifica Gabito.'

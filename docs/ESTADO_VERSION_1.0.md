@@ -4,6 +4,8 @@ Ampliación funcional completa solicitada por el usuario. Referencia: Documento 
 
 ## Implementación
 
+Ajuste aprobado posteriormente por el usuario: selector del elenco en columna vertical sobre el borde derecho, con desplazamiento vertical cuando es necesario y fichas ubicadas a su izquierda. Esta preferencia posterior prevalece sobre la disposición del piloto.
+
 | Área | Entrega |
 | --- | --- |
 | Elenco | Gabi, Gabito, El Profe, Migue, Pame, Nacho, Kevin y Dexter con diseño original y ficha propia. |

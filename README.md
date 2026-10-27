@@ -28,7 +28,7 @@ Abrir **http://localhost:4173/gabi-os/**. `dist/` es el sitio estático listo pa
 ## Probar la oficina completa
 
 1. Ver la oficina completa; acercarse con rueda, pinza o botones. Arrastrar con mouse/un dedo. Restablecer vista con el botón de flecha circular o Inicio.
-2. Tocar un personaje o abrir **Equipo · 8**: Gabi, Gabito, El Profe, Migue, Pame, Nacho, Kevin y Dexter. Cada uno tiene una acción propia, además de saludar, mate, paseo y escritorio. En móvil la ficha se cierra al ejecutar para dejar ver la animación.
+2. Tocar un personaje, elegirlo en la **columna del borde derecho** o abrir **Equipo · 8**: Gabi, Gabito, El Profe, Migue, Pame, Nacho, Kevin y Dexter. La columna se desplaza verticalmente si falta altura; en móvil usa retratos y nombres compactos. Cada uno tiene una acción propia, además de saludar, mate, paseo y escritorio. En móvil la ficha se cierra al ejecutar para dejar ver la animación.
 3. Activar seguimiento desde una ficha. Arrastrar para dejar de seguir. Las escenas nunca cambian el encuadre por su cuenta.
 4. Abrir **Lugares** o tocar los objetos: escritorio de Gabi, sala, cafetería, pizarrón, fotocopiadora, recepción y termo. La bandeja/tablero, materias y agenda son demostraciones rotuladas. El cuadro de Boca es un motivo propio reservado, sin escudo oficial.
 5. Elegir una escena desde Lugares → Ver escenas. Ver a Migue y Dexter debatir, Gabito y Kevin discutir el café, o convocar una reunión de ocho. Pausar, avanzar, terminar u omitir. Los participantes se acercan por rutas; la cámara no se mueve por la escena. Cada especialista también tiene un confesionario propio.

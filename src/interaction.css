@@ -5,3 +5,47 @@
 .scene-actions button{min-height:44px}
 @media(max-width:600px){.header-right>.square{width:44px;height:44px}}
 @media(max-width:380px){.header-right .local-time{display:none}}
+
+/* Character selection is a vertical rail on the right; the office retains its full canvas. */
+.cast{
+  left:auto;right:20px;top:114px;bottom:auto;
+  width:148px;max-width:148px;height:max-content;max-height:calc(100dvh - 230px);
+  flex-direction:column;align-items:stretch;gap:5px;padding:7px;
+  overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain;touch-action:pan-y;
+  pointer-events:auto;scrollbar-width:thin;scrollbar-color:#7b8b6b transparent;
+  background:#29332be8;border:1px solid #acb68c30;border-radius:12px;
+  box-shadow:0 8px 24px #131c1733;scroll-padding-block:8px;z-index:9;
+}
+.cast-chip{width:100%;min-height:48px;padding:3px 7px 3px 1px;gap:5px}
+.cast-chip img{width:33px;height:39px}
+.cast-chip span{min-width:0;font-size:10px}
+.cast-chip small{max-width:none;font-size:7px;line-height:1.5}
+.cast-chip[aria-pressed=true]{border-color:#d8b779a0;background:#49513a;color:#f1d3a1}
+.panel{right:184px}
+.explore-tools{top:114px}
+@media(max-width:1150px){
+  .cast{right:16px;width:138px;max-width:138px}
+  .panel{right:168px}
+}
+@media(max-width:800px){
+  .cast{top:104px;right:12px;width:66px;max-width:66px;padding:5px;gap:4px;max-height:calc(100dvh - 242px)}
+  .cast-chip{flex-direction:column;justify-content:center;min-height:48px;padding:2px;gap:0;text-align:center;border-radius:6px}
+  .cast-chip img{width:26px;height:29px}
+  .cast-chip span{font-size:8px;line-height:12px;min-width:0}
+  .cast-chip small{display:none}
+  .panel{right:90px}
+  .explore-tools{top:104px;right:90px}
+  .explore-tools .small-pill{flex-shrink:0}
+  .explore-tools .phase-badge{flex:1;min-width:0;max-width:none}
+}
+@media(max-width:600px){
+  .cast{top:94px;right:8px;width:64px;max-width:64px}
+  .panel{left:12px;right:82px;width:auto}
+  .scene-player{left:12px;right:82px;width:auto}
+  .explore-tools{top:94px;left:12px;right:82px}
+}
+@media(max-height:600px) and (min-width:601px){
+  .cast{top:78px;max-height:calc(100dvh - 184px)}
+  .explore-tools{top:78px}
+  .panel{top:78px}
+}

@@ -1,6 +1,6 @@
 # GABI OS — The Pixel Office · 1.0.0-rc.1
 
-Ampliación funcional completa solicitada por el usuario. Referencia: Documento Maestro v1.0. Estado: candidata para revisión en la rama `dev/pixel-office`; la publicación del piloto 0.1 en `main` se conserva hasta nueva aprobación.
+Ampliación funcional completa solicitada por el usuario. Referencia: Documento Maestro v1.0. La oficina completa y el selector derecho fueron publicados con aprobación; el usuario confirmó su funcionamiento en iPhone. La rama `dev/pixel-office` incorpora ahora una etapa posterior de infraestructura local, documentada en [Servidor de escritorio](SERVIDOR_ESCRITORIO.md), todavía sin publicar.
 
 ## Implementación
 

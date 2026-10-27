@@ -1,6 +1,8 @@
 # GABI OS — The Pixel Office
 
-Una pequeña oficina, un gran quilombo. Versión **1.0.0-rc.1** con los ocho personajes, siete lugares interactivos, escenas de sitcom, ciclo de Buenos Aires y audio original opcional. Construida con TypeScript, Vite y Phaser. Todo lo que sucede es ambientación local: no hay IA, OpenClaw, WhatsApp ni servicios pagos conectados.
+Una pequeña oficina, un gran quilombo. Versión **1.0.0-rc.1** con los ocho personajes, siete lugares interactivos, escenas de sitcom, ciclo de Buenos Aires y audio original opcional. Construida con TypeScript, Vite y Phaser. Los personajes y escenas siguen siendo ambientación; la rama de desarrollo incorpora un motor local de diagnóstico separado.
+
+La oficina completa fue publicada y el usuario confirmó su funcionamiento en iPhone. La siguiente etapa se ejecuta en la **PC de escritorio**, con OpenClaw aislado: el acceso mediante **ChatGPT Plus** y la comprobación del proveedor fueron verificados. La conversación y las tareas dentro de la oficina todavía no están habilitadas. Instrucciones: [servidor de escritorio](docs/SERVIDOR_ESCRITORIO.md).
 
 ![La oficina con el elenco completo](docs/previews/desktop.png)
 
@@ -96,10 +98,10 @@ La restauración de producción se hará únicamente con autorización. No hay m
 
 Vite usa `base: '/gabi-os/'`. El workflow de desarrollo solo prueba y genera un artefacto descargable; **no publica**. Se eliminó de esta rama el extractor ZIP que sobrescribía fuentes.
 
-El piloto 0.1 fue publicado con autorización y Pages ya está configurado para GitHub Actions. Esta ampliación RC se prepara en **dev/pixel-office** y no reemplaza automáticamente la web pública. El workflow `pages.yml` es manual, exige `main` y la entrada `PUBLICAR`. Después de revisar y aprobar esta versión, se podrá integrar y desplegar. La entrada manual reduce errores accidentales; no sustituye los permisos de GitHub ni la aprobación humana.
+La oficina completa con el selector derecho fue publicada con autorización y Pages está configurado para GitHub Actions. La infraestructura de escritorio se prepara en **dev/pixel-office** y no reemplaza automáticamente la web pública. El workflow `pages.yml` es manual, exige `main` y la entrada `PUBLICAR`. La entrada manual reduce errores accidentales; no sustituye los permisos de GitHub ni la aprobación humana.
 
 No se registra un service worker nuevo. `public/service-worker.js` retira únicamente las cachés `gabi-os-shell-*` del dashboard anterior. No toca localStorage ni cachés de otras aplicaciones. El modo offline/PWA nuevo queda para una etapa posterior y no es necesario para usar la oficina online.
 
 ## Próximas etapas
 
-Ver [estado de la versión completa y aceptación pendiente](docs/ESTADO_VERSION_1.0.md). La RC contiene la ampliación funcional; su cierre como 1.0 definitiva requiere revisión visual del usuario y comprobación en dispositivos reales.
+Ver [estado de la versión completa](docs/ESTADO_VERSION_1.0.md) y [motor de escritorio](docs/SERVIDOR_ESCRITORIO.md). El usuario ya confirmó la oficina en su iPhone. La etapa siguiente conecta funciones reales gradualmente, conservando la separación entre la sitcom y el trabajo verificado.

@@ -5,6 +5,7 @@ import {characterIds,hotspotIds,command,officeBus,type AmbientEvent,type Charact
 import {savePreferences} from '../core/preferences';
 import {OfficeAudio} from '../audio/OfficeAudio';
 import {icon} from './icons';
+import {mountDesktop} from './desktop';
 const places={desk:'Escritorio de Gabi',meeting:'Sala de reuniones',coffee:'Cafetería',board:'Pizarrón del Profe',copier:'Fotocopiadora',reception:'Recepción de Pame',thermos:'Termo de Gabito',frame:'Cuadro de Gabito'};
 const phaseNames={morning:'Mañana',day:'Día',evening:'Cierre de oficina',night:'Madrugada'};
 export function mountInterface(initial:Preferences){
@@ -17,7 +18,7 @@ export function mountInterface(initial:Preferences){
     <header class="masthead"><a class="brand" href="./" aria-label="GABI OS, volver al inicio"><span class="brand-symbol" aria-hidden="true">G</span><span><strong>GABI OS<span class="brand-dot">.</span></strong><span class="brand-sub">THE PIXEL OFFICE</span></span></a><div class="episode"><span class="episode-line"></span><span>TEMPORADA 01 <b>/</b> EL ELENCO COMPLETO</span></div><div class="header-right"><div class="local-time"><span>BUENOS AIRES</span><strong id="clock">--:--</strong></div><button class="square" id="audio-toggle" aria-label="Activar audio" aria-pressed="false" title="Audio apagado">${icon('volume')}</button><button class="square" id="help" aria-label="Cómo explorar">${icon('help')}</button><button class="square" id="settings" aria-label="Configuración">${icon('settings')}</button></div></header>
     <main id="world" aria-label="The Pixel Office"><div id="loading"><span class="loading-pixel"></span>Abriendo la oficina…</div></main>
     <nav class="cast" aria-label="Los ocho personajes">${roster()}</nav>
-    <div class="explore-tools"><button id="team" class="small-pill">${icon('hand')} Equipo · 8</button><button id="places" class="small-pill">${icon('desk')} Lugares</button><span id="phase-badge" class="phase-badge">Horario de Buenos Aires</span></div>
+    <div class="explore-tools"><button id="team" class="small-pill">${icon('hand')} Equipo · 8</button><button id="places" class="small-pill">${icon('desk')} Lugares</button><button id="desktop" class="small-pill">${icon('desk')} Motor</button><span id="phase-badge" class="phase-badge">Horario de Buenos Aires</span></div>
     <section class="welcome" aria-label="The Pixel Office"><div class="eyebrow"><span class="tiny-dash"></span> UNA SITCOM EN PÍXELES</div><h1>Bienvenido<br> al quilombo<span>.</span></h1><p>Ocho personajes. Una oficina.<br>El mate sigue siendo indispensable.</p><button class="text-button requires-office" id="view-scenes" disabled>Elegí una escena ${icon('play')}</button></section>
     <aside class="speech" id="speech" hidden aria-live="polite"><div class="speech-top"><span id="speech-author">ESCENA AMBIENTAL</span><button id="dismiss-speech" aria-label="Omitir comentario">${icon('close')}</button></div><p id="speech-text"></p></aside>
     <section id="character-panel" class="panel" hidden aria-labelledby="panel-title"><button class="panel-close square" id="close-panel" aria-label="Cerrar ficha">${icon('close')}</button><div id="panel-content"></div></section>
@@ -37,6 +38,7 @@ export function mountInterface(initial:Preferences){
     return `<button class="action" data-action="${action}">${icon(symbol)} ${label}</button>`;
   };
   function openModal(kicker:string,content:string){$('#modal-kicker').textContent=kicker;$('#modal-content').innerHTML=content;if(!dialog.open)dialog.showModal();}
+  mountDesktop(openModal);
   function chooseScene(id:SceneId){
     if(!prefs.humor){toast('El humor está apagado. Podés activarlo en Configuración.');return;}
     dialog.close();closePanel();$('#speech').hidden=true;command({type:'scene',id});

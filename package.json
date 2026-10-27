@@ -4,6 +4,11 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "server": "node server/desktop.mjs",
+    "gateway": "node server/gateway.mjs",
+    "gateway:login": "node server/gateway.mjs --login",
+    "gateway:check": "node server/gateway.mjs --check",
+    "test:server": "node --test tests/server/*.test.mjs",
     "dev": "vite --host 0.0.0.0",
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview --host 0.0.0.0",

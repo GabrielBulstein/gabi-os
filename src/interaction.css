@@ -49,3 +49,5 @@
   .explore-tools{top:78px}
   .panel{top:78px}
 }
+/* Real infrastructure remains separate from the fictional character actions. */
+.desktop-facts{display:grid;grid-template-columns:1fr 1fr;gap:12px;font-size:13px;margin:20px 0}.desktop-facts dt{color:var(--muted,#aaa)}.desktop-facts dd{margin:0;overflow-wrap:anywhere}

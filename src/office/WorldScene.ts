@@ -86,7 +86,13 @@ export class OfficeScene extends Phaser.Scene{
     this.game.canvas.setAttribute('aria-label','Mapa isométrico de la oficina con ocho personajes. Arrastrá para explorar; también podés usar los botones de equipo y lugares.');this.game.canvas.setAttribute('role','img');
     officeBus.dispatchEvent(new Event('ready'));
     if(this.welcomePending){
-      this.time.delayedCall(3000,()=>{if(!this.activeScene&&this.selected===null&&this.prefs.welcome&&this.prefs.humor){this.startScene('welcome');try{sessionStorage.setItem('pixel-office:welcome','1');}catch{}}});
+      // Intro timing follows elapsed wall time, not the renderer's smoothed frame delta.
+      const welcomeTimer=window.setTimeout(()=>{
+        if(this.ready&&!document.hidden&&!this.activeScene&&this.selected===null&&this.prefs.welcome&&this.prefs.humor){
+          this.startScene('welcome');try{sessionStorage.setItem('pixel-office:welcome','1');}catch{}
+        }
+      },3000);
+      this.cleanups.push(()=>window.clearTimeout(welcomeTimer));
     }
   }
   private addCharacter(id:CharacterId,cell:Point){

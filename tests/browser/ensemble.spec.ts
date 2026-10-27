@@ -64,6 +64,11 @@ test('scenes gather participants, advance, skip and leave the camera under user 
 });
 test('welcome is optional, skippable, and occurs at most once per session',async({page})=>{
   await page.getByRole('button',{name:'Configuración',exact:true}).click();await page.locator('#welcome').check();await page.getByRole('button',{name:'Cerrar ventana',exact:true}).click();
+  // Reproduce a slow renderer: the introduction must follow wall time instead of frame count.
+  await page.addInitScript(()=>{
+    window.requestAnimationFrame=callback=>window.setTimeout(()=>callback(performance.now()),120);
+    window.cancelAnimationFrame=id=>window.clearTimeout(id);
+  });
   await page.reload();await expect(page.locator('#loading')).toHaveCount(0);
   await expect(page.locator('#scene-title')).toHaveText('Llegó el jefe',{timeout:7000});await page.getByRole('button',{name:'Omitir escena',exact:true}).click();
   await expect(page.locator('#scene-player')).toBeHidden();

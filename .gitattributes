@@ -1,0 +1,4 @@
+* text=auto eol=lf
+*.png binary
+# Preserve the supplied master document's intentional Markdown hard line breaks.
+docs/GABI_OS_Documento_Maestro_v1.0.md whitespace=-blank-at-eol

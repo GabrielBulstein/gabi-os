@@ -7,7 +7,7 @@ Decisión del usuario del 27/10/2026: ejecutar el funcionamiento en la PC de esc
 - Servidor Node de diagnóstico en `127.0.0.1:8787`, con memoria disponible y comprobación del gateway aislado en `127.0.0.1:18799`.
 - Panel **Motor** en la oficina. En desarrollo consulta datos reales; en el sitio estático explica que el backend privado todavía falta.
 - Arranque aislado de OpenClaw ya instalado. No utiliza el perfil habitual, no importa claves del entorno, no configura canales de mensajería y no envía tareas.
-- Configuración y credenciales en `%LOCALAPPDATA%\GabiOS\runtime`, fuera de Git y OneDrive. El token local del gateway se genera automáticamente y nunca llega al navegador.
+- Configuración y credenciales en `D:\GABI-OS\data\runtime`, fuera de Git y OneDrive. El token local del gateway se genera automáticamente y nunca llega al navegador.
 - Acceso de diagnóstico solo por loopback, métodos de lectura, comprobación de Host/Origin, respuestas sin caché y consultas agrupadas durante cinco segundos.
 
 La salud HTTP confirma que el proceso responde; **no demuestra una respuesta del agente**, autenticación del modelo ni ejecución de trabajo real. La interfaz mantiene esa distinción.
@@ -76,3 +76,32 @@ Antes de trasladar la operación anterior, conservar recuerdos e historial de Ga
 5. Persistencia operativa: arranque automático, suspensión de Windows, copias de seguridad y monitorización antes de prometer funcionamiento continuo.
 
 Diagnóstico de esta PC: i5-10400F, unos 32 GB RAM, 11 GB libres en C: y 372 GB libres en D: al revisar. WSL solo tiene `docker-desktop`, detenido; Docker no estaba iniciado. Esta etapa usa Node/OpenClaw nativos y no requiere iniciar Docker ni descargar modelos. Conviene elegir D: para almacenamiento voluminoso posterior.
+
+## Ubicación definitiva en D: — 27/10/2026
+
+Por indicación del usuario, el proyecto y sus datos propios se alojan en **D:\GABI-OS**:
+
+- Código y documentos originales: D:\GABI-OS\project\gabi-os y la carpeta project.
+- Perfil local autenticado: D:\GABI-OS\data\runtime.
+- Respaldos cifrados e informes: D:\GABI-OS\data\migration.
+- Ensayo de restauración: D:\GABI-OS\data\recovery.
+- Snapshots originales previos al traslado: D:\GABI-OS\data\snapshots.
+- OpenClaw 2026.10.1 aislado: D:\GABI-OS\tools\openclaw-2026.10.1.
+- Cachés y temporales propios: D:\GABI-OS\cache.
+
+El launcher usa estas rutas de forma predeterminada y no vuelve a AppData como alternativa silenciosa. En Windows GABI_OS_HOME debe apuntar a D:. Los scripts de inventario, respaldo y transferencia comparten esa ubicación. Las herramientas compartidas del sistema, como Node, Git, Windows y las claves de usuario de DPAPI, no se trasladan.
+
+Para abrir la oficina, desde el repositorio:
+
+    .\scripts\start-office.ps1 dev
+
+En terminales separadas, para servidor y gateway:
+
+    .\scripts\start-office.ps1 server
+    .\scripts\start-office.ps1 gateway
+
+El iniciador fija también cachés y temporales en D:. La oficina abre en http://localhost:5173/gabi-os/.
+
+Se verificaron las copias por SHA-256 y se creó archive/before-disk-d-move-2026-10-27 antes de retirar los originales. La restauración de ensayo con OpenClaw 2026.10.1 validó SQLite y comparó 129/129 archivos de workspace, 38/38 archivos de memoria y 5/5 documentos de identidad. El verificador admite rutas largas de Windows y todos los formatos de memoria; no se leyeron recuerdos en pantalla ni se activaron WhatsApp o tareas del perfil restaurado. Esto prueba conservación, no integración de sus sesiones al gateway local ni una conversación con Gabito.
+
+Estado de limpieza de C: la revisión automática no autorizó borrar las copias anteriores sin aprobación explícita. Se conservaron como gabi-os.pre-D-20261027, publication.pre-D-20261027 y GabiOS.pre-D-20261027. Las rutas anteriores del repositorio, artefactos y datos son junctions hacia D:, de modo que las referencias existentes usan el contenido activo de D:. La carpeta padre de OneDrive estaba en uso y no se renombró; los documentos originales allí conservados también tienen copias verificadas en D:. Aún no se ha liberado el espacio ocupado por esas copias anteriores.

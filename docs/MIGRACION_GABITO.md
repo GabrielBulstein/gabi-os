@@ -22,7 +22,7 @@ Desde PowerShell en el repositorio:
 .\scripts\inventory-philco.ps1
 ```
 
-Ingresar la contraseña únicamente en la terminal cuando SSH la solicite. El script comprueba la identidad SSH conocida, ejecuta Python estándar de solo lectura y guarda el informe en `%LOCALAPPDATA%\GabiOS\migration`, fuera de Git y OneDrive.
+Ingresar la contraseña únicamente en la terminal cuando SSH la solicite. El script comprueba la identidad SSH conocida, ejecuta Python estándar de solo lectura y guarda el informe en `D:\GABI-OS\data\migration`, fuera de Git y OneDrive.
 
 El informe muestra versiones, estado del servicio, rutas candidatas, cantidades/tamaños, presencia y hashes de archivos de identidad. No muestra textos de recuerdos ni credenciales. No abre bases de datos, crea respaldos, detiene servicios o importa archivos. Limita cada recorrido a 20.000 archivos y marca los resultados truncados. Los enlaces simbólicos, raíces personalizadas, perfiles adicionales y configuraciones JSON5 necesitan revisión antes de dar por completo el inventario.
 
@@ -53,7 +53,7 @@ El procedimiento vuelve a comprobar el servicio y las rutas de su proceso, revis
 
 El trabajo comprueba el plan de captura antes de detener el gateway. Lo pausa durante `backup create`, intenta reiniciarlo enseguida y después ejecuta `backup verify`, calcula SHA-256 y registra el estado del servicio. Un bloqueo evita dos trabajos simultáneos. El reinicio de recuperación de systemd solo se arma para el trabajo que llegó a intentar la pausa. Si SSH se desconecta, el trabajo remoto sigue; no relanzarlo a ciegas. Una caída del equipo o un fallo del propio servicio aún requieren recuperación manual.
 
-El archivo es una copia **local, privada y sin cifrar** en la Philco, con permisos restringidos; incluye credenciales sensibles. No compartirlo por chat ni subirlo a GitHub/Pages. La transferencia protegida, una segunda copia cifrada y el ensayo de restauración son fases posteriores. El informe resumido se guarda en `%LOCALAPPDATA%\GabiOS\migration`. Solo `success: true`, `verified: true` y `service_after: active` confirman la finalización prevista; iniciar el script no demuestra que el respaldo exista.
+El archivo es una copia **local, privada y sin cifrar** en la Philco, con permisos restringidos; incluye credenciales sensibles. No compartirlo por chat ni subirlo a GitHub/Pages. La transferencia protegida, una segunda copia cifrada y el ensayo de restauración son fases posteriores. El informe resumido se guarda en `D:\GABI-OS\data\migration`. Solo `success: true`, `verified: true` y `service_after: active` confirman la finalización prevista; iniciar el script no demuestra que el respaldo exista.
 
 Si el servicio no queda activo, recuperar desde una sesión SSH autenticada con:
 
@@ -76,7 +76,7 @@ El comando toma el último informe de respaldo verificado, valida la ruta de ori
 
 Después comprueba tamaño y SHA-256 contra el informe. Cifra con Windows DPAPI para el usuario actual y comprueba que puede descifrar la copia y obtener la misma huella. Solo después elimina la copia temporal descargada sin cifrar, conservando intacto el archivo remoto. Los errores no se anuncian como éxito; una descarga incompleta puede quedar en la carpeta privada para revisar.
 
-La copia queda en `%LOCALAPPDATA%\GabiOS\migration\backups\<identificador>\gabito-full.tar.gz.dpapi`. El recibo `philco-transfer-*.json` se guarda en la carpeta de migración y no contiene recuerdos ni claves. Esta modalidad tiene un límite de 512 MiB por archivo para acotar la memoria usada durante el cifrado.
+La copia queda en `D:\GABI-OS\data\migration\backups\<identificador>\gabito-full.tar.gz.dpapi`. El recibo `philco-transfer-*.json` se guarda en la carpeta de migración y no contiene recuerdos ni claves. Esta modalidad tiene un límite de 512 MiB por archivo para acotar la memoria usada durante el cifrado.
 
 **DPAPI depende de la cuenta/perfil de Windows que cifró el archivo.** Esta copia no es todavía un respaldo portátil para reinstalar Windows o recuperar con otro usuario; conservar el respaldo original de la Philco y preparar después una copia de recuperación independiente. Nunca subir el archivo a GitHub/Pages ni adjuntarlo al chat.
 

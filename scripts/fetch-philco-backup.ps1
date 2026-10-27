@@ -5,6 +5,7 @@ param(
     [ValidatePattern('^[a-z_][a-z0-9_-]*$')][string]$UserName = 'gabriel'
 )
 $ErrorActionPreference = 'Stop'
+. (Join-Path $PSScriptRoot 'windows-paths.ps1')
 
 function Assert-VerifiedBackupReport($Report, [string]$SourceUser) {
     if ($Report.schema -ne 1 -or $Report.kind -ne 'source-backup' -or $Report.success -ne $true -or $Report.verified -ne $true) {
@@ -115,7 +116,7 @@ function Invoke-SftpResume([string]$Directory, [string]$Archive, [string]$Target
 }
 
 function Invoke-BackupTransfer {
-    $migration = Join-Path ([Environment]::GetFolderPath('LocalApplicationData')) 'GabiOS\migration'
+    $migration = (Get-GabiOsPaths).Migration
     if (!$ReportPath) {
         $latest = Get-ChildItem -LiteralPath $migration -Filter 'philco-backup-*.json' | Sort-Object LastWriteTime -Descending | Select-Object -First 1
         if (!$latest) { throw 'No se encontro el informe de respaldo.' }

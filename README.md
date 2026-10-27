@@ -11,7 +11,7 @@ La oficina completa fue publicada y el usuario confirmó su funcionamiento en iP
 Requisito: Node.js 22.12 o posterior (probado con Node 24).
 
 ```powershell
-cd "C:\Users\gabri\OneDrive\DESCARGAS\Proyecto The Office\gabi-os"
+cd "D:\GABI-OS\project\gabi-os"
 npm ci
 npm run dev
 ```
@@ -105,3 +105,9 @@ No se registra un service worker nuevo. `public/service-worker.js` retira única
 ## Próximas etapas
 
 Ver [estado de la versión completa](docs/ESTADO_VERSION_1.0.md) y [motor de escritorio](docs/SERVIDOR_ESCRITORIO.md). El usuario ya confirmó la oficina en su iPhone. La etapa siguiente conecta funciones reales gradualmente, conservando la separación entre la sitcom y el trabajo verificado.
+
+## Proyecto y datos en D:
+
+La ubicación principal es **D:\GABI-OS\project\gabi-os**. Perfil, respaldos, restauración de ensayo, herramientas de OpenClaw y cachés propios están bajo D:\GABI-OS; ver [rutas e inicio desde D:](docs/SERVIDOR_ESCRITORIO.md).
+
+El ensayo de restauración conservó 129 archivos del workspace, 38 archivos de memoria y cinco documentos de identidad, con las bases SQLite verificadas. Ese perfil sigue sin activar; no se migró todavía WhatsApp ni se habilitaron tareas reales.

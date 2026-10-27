@@ -3,6 +3,7 @@ param(
     [ValidatePattern('^[a-z_][a-z0-9_-]*$')][string]$UserName = 'gabriel'
 )
 $ErrorActionPreference = 'Stop'
+. (Join-Path $PSScriptRoot 'windows-paths.ps1')
 $payload = [Convert]::ToBase64String([IO.File]::ReadAllBytes((Join-Path $PSScriptRoot 'backup-openclaw.py')))
 $remoteCommand = "printf %s $payload | base64 -d | python3 -B"
 Write-Host 'Respaldo completo y verificado de Gabito en una carpeta privada de la Philco.'
@@ -12,7 +13,7 @@ $raw = & ssh.exe -o StrictHostKeyChecking=yes -o ConnectTimeout=7 -o NumberOfPas
 if ($LASTEXITCODE -ne 0) { throw 'SSH se interrumpio. No relances el respaldo a ciegas: el trabajo remoto puede seguir activo.' }
 $report = ($raw -join "`n") | ConvertFrom-Json
 if ($report.schema -ne 1 -or $report.kind -ne 'source-backup') { throw 'Respuesta inesperada. Revisar el trabajo remoto.' }
-$folder = Join-Path ([Environment]::GetFolderPath('LocalApplicationData')) 'GabiOS\migration'
+$folder = (Get-GabiOsPaths).Migration
 New-Item -ItemType Directory -Path $folder -Force | Out-Null
 $destination = Join-Path $folder ("philco-backup-" + (Get-Date -Format 'yyyyMMdd-HHmmss') + '.json')
 [IO.File]::WriteAllText($destination, ($raw -join "`n"), [Text.UTF8Encoding]::new($false))

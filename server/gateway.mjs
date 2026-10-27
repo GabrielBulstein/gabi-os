@@ -2,17 +2,19 @@ import {mkdir,readFile,writeFile,access} from 'node:fs/promises';
 import {join} from 'node:path';
 import {randomBytes} from 'node:crypto';
 import {spawn} from 'node:child_process';
-import {homedir} from 'node:os';
+import {officePaths} from './paths.mjs';
 
 // Private runtime lives outside Git/OneDrive. Never reuse the default OpenClaw profile.
-const root=process.platform==='win32'?join(process.env.LOCALAPPDATA,'GabiOS','runtime'):join(homedir(),'.local','share','gabi-os');
+const paths=officePaths();
+const root=paths.runtime;
 const configPath=join(root,'openclaw.json');
 const login=process.argv.includes('--login');
 const check=process.argv.includes('--check');
-const cli=process.env.GABI_OPENCLAW_ENTRY??(process.platform==='win32'?join(process.env.APPDATA,'npm','node_modules','openclaw','openclaw.mjs'):undefined);
+const cli=paths.cli;
 if(!cli)throw new Error('Definí GABI_OPENCLAW_ENTRY con la ruta del openclaw.mjs instalado.');
 await access(cli);
 await mkdir(root,{recursive:true,mode:0o700});
+await Promise.all([paths.temp,paths.logs,join(paths.cache,'npm'),join(paths.cache,'node')].map(path=>mkdir(path,{recursive:true,mode:0o700})));
 let config;
 try{config=JSON.parse(await readFile(configPath,'utf8'));}catch(error){if(error.code!=='ENOENT')throw error;}
 if(!config){
@@ -40,6 +42,7 @@ const env={};
 // Explicit allowlist avoids importing channel/provider credentials from the parent shell.
 for(const key of ['PATH','Path','SystemRoot','WINDIR','COMSPEC','PATHEXT','APPDATA','LOCALAPPDATA','USERPROFILE','HOME','TEMP','TMP','LANG'])if(process.env[key])env[key]=process.env[key];
 Object.assign(env,{OPENCLAW_STATE_DIR:root,OPENCLAW_CONFIG_PATH:configPath});
+Object.assign(env,{TEMP:paths.temp,TMP:paths.temp,NPM_CONFIG_CACHE:join(paths.cache,'npm'),NODE_COMPILE_CACHE:join(paths.cache,'node')});
 console.log(check?'GABI OS · Verificando el proveedor con una consulta breve.':login?'GABI OS · Iniciá sesión con ChatGPT en el navegador. No compartas credenciales por chat.':'GABI OS · gateway aislado en 127.0.0.1:18799. Sin canales de mensajería. Ctrl+C para detener.');
 const args=check?['models','status','--json','--probe','--probe-provider','openai','--probe-max-tokens','16','--probe-timeout','20000','--probe-concurrency','1']:login?['models','auth','login','--provider','openai','--set-default']:['--log-level','error','gateway','run','--port','18799','--bind','loopback'];
 const child=spawn(process.execPath,[cli,...args],{env,cwd:root,stdio:check?['ignore','pipe','ignore']:'inherit',windowsHide:true,...check?{timeout:90000}:{} });

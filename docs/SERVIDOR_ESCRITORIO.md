@@ -105,3 +105,7 @@ El iniciador fija también cachés y temporales en D:. La oficina abre en http:/
 Se verificaron las copias por SHA-256 y se creó archive/before-disk-d-move-2026-10-27 antes de retirar los originales. La restauración de ensayo con OpenClaw 2026.10.1 validó SQLite y comparó 129/129 archivos de workspace, 38/38 archivos de memoria y 5/5 documentos de identidad. El verificador admite rutas largas de Windows y todos los formatos de memoria; no se leyeron recuerdos en pantalla ni se activaron WhatsApp o tareas del perfil restaurado. Esto prueba conservación, no integración de sus sesiones al gateway local ni una conversación con Gabito.
 
 Limpieza de C completada tras autorización explícita del usuario: se eliminaron únicamente las tres carpetas .pre-D-20261027 y las dos copias originales de los documentos maestros, después de verificar otra vez sus respaldos por SHA-256. Se liberaron aproximadamente 0,77 GiB. Los documentos maestros y los snapshots siguen en D:. Las rutas antiguas del repositorio, artefactos y datos son junctions hacia D:, sin duplicar el contenido activo en C:. El recibo privado de limpieza quedó en D:\GABI-OS\data\move-audit\completed.json. La instalación compartida anterior de OpenClaw no se modificó.
+
+## Inicio automático y acceso privado implementados
+
+La tarea de Windows mantiene oficina, chat y gateway. El iPhone accede al chat por HTTPS con Tailscale; la instancia de la Philco permanece separada. Ver [configuración, pruebas y recuperación](INICIO_Y_ACCESO_PRIVADO.md).

@@ -33,7 +33,7 @@ Herramientas denegadas, cron y heartbeat deshabilitados, sin canales de mensajer
 
 La API HTTP de OpenClaw usa un token con permisos amplios: queda únicamente en el servidor de loopback 18799. El navegador recibe una sesión efímera del puente 8787. Se exige origen local, token de sesión y límites de entrada. Vite bloquea el puente para conexiones de red y hosts distintos de localhost:5173 o 127.0.0.1:5173.
 
-GitHub Pages conserva la oficina estática. El chat está deshabilitado en la compilación pública. iPhone y acceso remoto al chat requieren una etapa posterior con HTTPS y autenticación.
+GitHub Pages conserva la oficina estática. El chat está deshabilitado en la compilación pública. Existe un build privado separado en dist-private. El iPhone ya puede acceder por HTTPS mediante Tailscale con identidad restringida al propietario: ver [inicio automático y acceso privado](INICIO_Y_ACCESO_PRIVADO.md).
 
 Los diálogos, rutinas y confesionarios de la sitcom siguen siendo ficción. El chat identifica las respuestas reales de IA y las fuentes recuperadas. No hay envío automático de prompts. Si una respuesta queda incierta, no se reintenta automáticamente; revisar el historial antes de enviar otra consulta.
 

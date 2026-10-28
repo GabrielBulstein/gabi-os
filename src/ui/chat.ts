@@ -1,3 +1,4 @@
+const privateChat=import.meta.env.DEV||import.meta.env.VITE_PRIVATE_OFFICE==='1';
 import './chat.css';
 type Message={id:string;role:'user'|'assistant';text:string;sources?:string[]};
 const errors:Record<string,string>={busy:'Gabito está respondiendo. Esperá y volvé a abrir la conversación.',response_uncertain:'No pudimos confirmar la respuesta. Revisá el historial antes de volver a enviar para evitar consumir otra consulta.',quota_or_rate_limit:'La cuenta alcanzó un límite temporal. Intentá más tarde.',model_unavailable:'El modelo no está disponible. Revisá el gateway local.',memory_not_ready:'La memoria todavía no está preparada.',profile_not_ready:'El perfil local necesita revisión.',commands_disabled:'Este chat solo conversa; no acepta comandos.'};
@@ -22,7 +23,7 @@ export function mountChat(openModal:(kicker:string,html:string)=>void){
   };
   const update=()=>{send.disabled=!ready||pending||!input.value.trim();input.disabled=!ready||pending;};
   update();
-  if(!import.meta.env.DEV){status.textContent='La versión de GitHub Pages muestra la oficina. Abrí la oficina en localhost:5173 en esta PC para conversar con tu memoria privada.';return;}
+  if(!privateChat){status.textContent='La versión de GitHub Pages muestra la oficina. Abrí la oficina en localhost:5173 en esta PC o la dirección privada Tailscale para conversar con tu memoria privada.';return;}
   async function request(path:string,init:RequestInit={}){
    const response=await fetch('/__desktop/chat/'+path,{...init,cache:'no-store',headers:{'Content-Type':'application/json','X-Gabi-Session':token,...init.headers}});
    const data=await response.json();if(!response.ok)throw new Error(data.error||'unavailable');return data;

@@ -114,4 +114,4 @@ El ensayo de restauración conservó 129 archivos del workspace, 38 archivos de 
 
 ## Chat real de Gabito
 
-Desde su ficha, Conversar con Gabito abre el chat local con Sol y razonamiento bajo. Recuerdos e historial quedan en D:, con herramientas y automatizaciones deshabilitadas. Ver [inicio, pruebas y límites](docs/CHAT_GABITO.md). El chat privado aún no está disponible desde GitHub Pages o el iPhone.
+Desde su ficha, Conversar con Gabito abre el chat local con Sol y razonamiento bajo. Recuerdos e historial quedan en D:, con herramientas y automatizaciones deshabilitadas. Ver [inicio, pruebas y límites](docs/CHAT_GABITO.md). El chat está disponible en esta PC y desde el iPhone por Tailscale; GitHub Pages conserva la versión estática. Ver [inicio automático y acceso privado](docs/INICIO_Y_ACCESO_PRIVADO.md).

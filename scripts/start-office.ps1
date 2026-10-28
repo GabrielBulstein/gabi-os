@@ -1,4 +1,4 @@
-param([ValidateSet('dev','preview','server','gateway','build','test','test:server','test:e2e','gateway:login','gateway:check')][string]$Task='dev')
+param([ValidateSet('dev','preview','server','gateway','build','test','test:server','test:e2e','gateway:login','gateway:check','private:server','build:private')][string]$Task='dev')
 $ErrorActionPreference='Stop'
 . (Join-Path $PSScriptRoot 'windows-paths.ps1')
 $paths=Get-GabiOsPaths

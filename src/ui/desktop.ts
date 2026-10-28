@@ -1,10 +1,11 @@
+const privateChat=import.meta.env.DEV||import.meta.env.VITE_PRIVATE_OFFICE==='1';
 type DesktopStatus={schema:1;checkedAt:string;host:'desktop';mode:'read-only';memory:{totalMB:number;freeMB:number};cpu:{model:string;logicalCores:number};gateway:'live'|'unverified'|'unreachable';agentResponseVerified:false;taskSubmission:false};
 
 export function mountDesktop(openModal:(kicker:string,content:string)=>void){
   let controller:AbortController|undefined;
   const open=()=>{
     controller?.abort();
-    openModal('INFRAESTRUCTURA · PC DE ESCRITORIO',`<h2 id="modal-title">El motor de la oficina.</h2><p class="modal-intro">La PC de escritorio alojará los agentes. La Philco queda fuera de esta conexión.</p><p id="desktop-status" role="status">${import.meta.env.DEV?'Consultá el servidor para ver datos reales de esta PC.':'El diagnóstico local está disponible al ejecutar la aplicación en la PC. GitHub Pages conserva la oficina independiente.'}</p><dl id="desktop-facts" class="desktop-facts"></dl><button id="desktop-check" class="wide-action" ${import.meta.env.DEV?'':'disabled'}>Consultar servidor local</button><p class="panel-note">Este diagnóstico es de solo lectura. La salud del gateway no verifica al agente: comprobá sus respuestas desde el chat de Gabito. Este botón no envía tareas ni mensajes. Para acceso desde el iPhone y GitHub Pages falta configurar un backend privado con HTTPS y autenticación.</p>`);
+    openModal('INFRAESTRUCTURA · PC DE ESCRITORIO',`<h2 id="modal-title">El motor de la oficina.</h2><p class="modal-intro">La PC de escritorio alojará los agentes. La Philco queda fuera de esta conexión.</p><p id="desktop-status" role="status">${privateChat?'Consultá el servidor para ver datos reales de esta PC.':'El diagnóstico local está disponible al ejecutar la aplicación en la PC. GitHub Pages conserva la oficina independiente.'}</p><dl id="desktop-facts" class="desktop-facts"></dl><button id="desktop-check" class="wide-action" ${privateChat?'':'disabled'}>Consultar servidor local</button><p class="panel-note">Este diagnóstico es de solo lectura. La salud del gateway no verifica al agente: comprobá sus respuestas desde el chat de Gabito. Este botón no envía tareas ni mensajes. El iPhone usa la dirección HTTPS privada de Tailscale. GitHub Pages conserva la oficina sin chat privado.</p>`);
     const button=document.querySelector<HTMLButtonElement>('#desktop-check')!;
     const status=document.querySelector<HTMLElement>('#desktop-status')!;
     const facts=document.querySelector<HTMLElement>('#desktop-facts')!;

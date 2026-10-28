@@ -13,7 +13,9 @@
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview --host 0.0.0.0",
     "test": "vitest run",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "build:private": "tsc --noEmit && vite build --mode private --outDir dist-private",
+    "private:server": "node server/private.mjs"
   },
   "dependencies": {
     "phaser": "^3.90.0"
